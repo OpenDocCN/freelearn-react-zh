@@ -184,6 +184,725 @@ const App = () => (
 
 +   一个模板字符串，它可以用来将变量插入到字符串中。它用反引号（`` ` ``) 而不是普通的单引号（`'`）。 变量可以通过`${ variableName}`语法插入。我们还可以在`${}`括号内使用任何JavaScript表达式，例如`${someValue + 1}`。
 
+1.  最后，我们在用`authenticateUser`上下文包装后导出我们的组件：
+
+```jsx
+        }
+    </AuthenticationContext.Consumer>
+)
+
+export default authenticateUser(App)
+```
+
+在前面的示例中，我们使用了高阶的`authenticateUser`组件来为现有组件添加身份验证逻辑。然后，我们使用`AuthenticationContext.Consumer`通过其渲染属性将`user`对象注入到我们的组件中。
+
+正如您可以想象的那样，使用许多上下文将导致一个庞大的树，其中有许多子树，也称为**包装器地狱**。例如，当我们想使用三个上下文时，包装器地狱看起来如下：
+
+```jsx
+<AuthenticationContext.Consumer>
+    {user => (
+        <LanguageContext.Consumer>
+            {language => (
+                <StatusContext.Consumer>
+                    {status => (
+                        ...
+                    )}
+                </StatusContext.Consumer>
+            )}
+        </LanguageContext.Consumer>
+    )}
+</AuthenticationContext.Consumer>
+```
+
+这并不容易阅读或编写，如果我们以后需要更改某些内容，它也容易出错。此外，包装器地狱使得调试变得困难，因为我们必须查看一个庞大的组件树，其中许多组件仅作为包装器。
+
+# 钩子来救援！
+
+React 钩子基于与 React 相同的基本原则。它们试图通过使用现有的 JavaScript 功能来封装状态管理。因此，我们不再需要学习和理解专门的 React 功能；我们可以简单地利用我们现有的 JavaScript 知识来使用钩子。
+
+使用钩子，我们可以解决所有前面提到的问题。我们不再需要使用类组件，因为钩子只是可以在函数组件中调用的函数。我们也不再需要为上下文使用高阶组件和渲染属性，因为我们可以简单地使用上下文钩子来获取我们需要的数据。此外，钩子允许我们在组件之间重用有状态的逻辑，而不需要创建高阶组件。
+
+例如，上述生命周期方法的问题可以通过使用钩子来解决，如下所示：
+
+```jsx
+function Example ({ name }) {
+    useEffect(() => {
+        fetch(`http://my.api/${this.props.name}`)
+            .then(...)
+    }, [ name ])
+    // ...
+}
+```
+
+这里实现的 Effect Hook 将在组件挂载时自动触发，并且每当`name`属性发生变化时。
+
+此外，前面提到的包装器地狱也可以通过使用钩子来解决，如下所示：
+
+```jsx
+    const user = useContext(AuthenticationContext)
+    const language = useContext(LanguageContext)
+    const status = useContext(StatusContext)
+```
+
+既然我们知道钩子可以解决哪些问题，让我们开始在实践中使用钩子吧！
+
+# 开始使用 React 钩子
+
+正如我们所见，React 钩子解决了许多问题，尤其是大型 Web 应用程序的问题。钩子是在 React 16.8 中添加的，它们允许我们使用状态以及各种其他 React 功能，而不必编写类。在本节中，我们将首先使用`create-react-app`初始化一个项目，然后我们将定义一个类组件，最后我们将使用钩子将同一组件编写为函数组件。在本节结束时，我们将讨论钩子的优势，以及我们如何着手迁移到基于钩子的解决方案。
+
+# `create-react-app`初始化项目
+
+要初始化 React 项目，我们可以使用`create-react-app`工具，该工具为 React 开发设置了环境，包括以下内容：
+
++   Babel，以便我们可以使用 JSX 和 ES6 语法
+
++   它甚至包括超出 ES6 的语言扩展，例如对象展开运算符，我们将在后面使用
+
++   此外，我们甚至可以使用 TypeScript 和 Flow 语法
+
+此外，`create-react-app`设置了以下内容：
+
++   自动添加前缀的**层叠样式表**（**CSS**），这样我们就不需要特定浏览器的`-webkit`等前缀
+
++   一个快速的交互式单元测试运行器，带有代码覆盖报告
+
++   一个实时开发服务器，它会警告我们常见的错误
+
++   一个构建脚本，它为生产捆绑 JavaScript、CSS 和图像，包括哈希值和源映射
+
++   一个离线优先的服务工作者和一个 Web 应用清单，以满足**渐进式 Web 应用**（**PWA**）的所有标准
+
++   对前面列出的所有工具的无忧更新
+
+正如我们所见，`create-react-app`工具使 React 开发对我们来说变得更加容易。它是我们学习 React 以及部署 React 应用程序到生产环境的完美工具。
+
+# 创建新项目
+
+为了设置一个新项目，我们运行以下命令，该命令创建一个名为`<app-name>`的新目录：
+
+```jsx
+> npx create-react-app <app-name>
+```
+
+如果你更喜欢使用`yarn`包管理器，你可以运行`yarn create react-app <app-name>`来代替。
+
+我们现在将使用`create-react-app`创建一个新项目。运行以下命令以创建第一个章节中的第一个示例的新 React 项目：
+
+```jsx
+> npx create-react-app chapter1_1
+```
+
+既然我们已经初始化了项目，让我们继续启动项目。
+
+# 启动项目
+
+为了在开发模式下启动项目，我们必须运行`npm start`命令。运行以下命令：
+
+```jsx
+> npm start
+```
+
+现在，我们可以通过在浏览器中打开`http://localhost:3000`来访问我们的项目：
+
+![](img/0a60f3e7-17d3-415e-bb06-6f135db4f8ec.png)
+
+我们的第一个 React 应用！
+
+正如我们所见，使用`create-react-app`，设置一个新的 React 项目相当容易！
+
+# 部署项目
+
+为了构建用于生产部署的项目，我们只需运行`build`脚本：
+
+1.  运行以下命令以构建用于生产部署的项目：
+
+```jsx
+> npm run-script build
+```
+
+使用`yarn`，我们可以简单地运行`yarn build`。实际上，我们可以以这种方式运行任何不与内部`yarn`命令名称冲突的包脚本：`yarn <script-name>`，而不是`npm run-script <script-name>`。
+
+1.  然后，我们可以使用 Web 服务器或使用`serve`工具来提供我们的静态构建文件夹。首先，我们必须安装它：
+
+```jsx
+> npm install -g serve
+```
+
+1.  然后，我们可以运行以下`serve`命令：
+
+```jsx
+> serve -s build
+```
+
+`serve`命令的`-s`标志将所有未找到的请求重写为`index.html`，允许客户端路由。
+
+现在，我们可以通过在浏览器中打开`http://localhost:5000`来访问同一个应用。请注意，`serve`工具不会自动在您的浏览器中打开页面。
+
+在了解了`create-react-app`之后，我们现在将用 React 编写我们的第一个组件。
+
+# 从类组件开始
+
+首先，我们从传统的 React 类组件开始，它允许我们输入一个名字，然后我们在我们的应用中显示这个名字。
+
+# 设置项目
+
+如前所述，我们将使用`create-react-app`来初始化我们的项目。如果你还没有这样做，现在运行以下命令：
+
+```jsx
+> npx create-react-app chapter1_1
+```
+
+接下来，我们将把我们的应用定义为类组件。
+
+# 定义类组件
+
+我们首先将我们的应用编写为传统的类组件，如下所示：
+
+1.  首先，我们从`src/App.js`文件中删除所有代码。
+
+1.  接下来，在`src/App.js`中，我们导入`React`：
+
+```jsx
+import React from 'react'     
+```
+
+1.  然后，我们开始定义我们自己的类组件——`MyName`：
+
+```jsx
+class MyName extends React.Component {
+```
+
+1.  接下来，我们必须定义一个`constructor`方法，在其中设置初始的`state`对象，这将是一个空字符串。在这里，我们还需要确保调用`super(props)`，以便让`React.Component`构造函数知道`props`对象：
+
+```jsx
+    constructor (props) {
+        super(props)
+        this.state = { name: '' }
+    }
+```
+
+1.  现在，我们定义一个方法来设置`name`变量，使用`this.setState`。由于我们将使用这个方法来处理来自文本字段的输入，我们需要使用`evt.target.value`来从输入字段获取值：
+
+```jsx
+   handleChange (evt) {
+       this.setState({ name: evt.target.value })
+   }
+```
+
+1.  然后，我们定义`render`方法，在其中我们将显示一个输入字段和名字：
+
+```jsx
+   render () {
+```
+
+1.  为了从`this.state`对象中获取`name`变量，我们将使用解构：
+
+```jsx
+       const { name } = this.state
+```
+
+前面的语句等同于做以下操作：
+
+```jsx
+       const name = this.state.name
+```
+
+1.  然后，我们显示当前输入的`name`状态变量：
+
+```jsx
+    return (
+        <div>
+            <h1>My name is: {name}</h1>
+```
+
+1.  我们显示一个`input`字段，将处理方法传递给它：
+
+```jsx
+                <input type="text" value={name} onChange={this.handleChange} />
+            </div>
+        )
+    }
+}
+```
+
+1.  最后，我们导出我们的类组件：
+
+```jsx
+export default MyName
+```
+
+如果我们现在运行这段代码，当我们输入文本时，我们会得到以下错误，因为将处理方法传递给`onChange`改变了`this`上下文：
+
+未捕获的 TypeError：无法读取未定义的属性'setState'
+
+1.  所以，现在我们需要调整`constructor`方法并重新绑定我们处理方法的`this`上下文到类：
+
+```jsx
+    constructor (props) {
+        super(props)
+        this.state = { name: '' }
+        this.handleChange = this.handleChange.bind(this)
+    }
+```
+
+有可能使用箭头函数作为类方法，以避免重新绑定`this`上下文。然而，为了使用这个特性，我们需要安装 Babel 编译器插件，`@babel/plugin-proposal-class-properties`，因为它还不是已发布的 JavaScript 特性。
+
+最后，我们的组件工作了！如你所见，为了使状态处理在类组件中正常工作，需要编写大量的代码。我们还需要重新绑定`this`上下文，否则我们的处理方法将无法工作。这并不直观，而且在开发过程中很容易忽略，导致令人讨厌的开发体验。
+
+# 示例代码
+
+示例代码可以在`Chapter01/chapter1_1`文件夹中找到。
+
+只需运行`npm install`来安装所有依赖项，并运行`npm start`来启动应用程序；然后在浏览器中访问`http://localhost:3000`（如果它没有自动打开）。
+
+# 使用 Hooks 替代
+
+使用传统的类组件编写我们的应用之后，我们将使用 Hooks 来编写相同的应用。和之前一样，我们的应用将允许我们输入一个名字，然后在我们应用中显示这个名字。
+
+请注意，只有在 React 函数组件中才能使用 Hooks。你不能在 React 类组件中使用 Hooks！
+
+现在，我们开始设置项目。
+
+# 设置项目
+
+再次，我们使用`create-react-app`来设置我们的项目：
+
+```jsx
+> npx create-react-app chapter1_2
+```
+
+现在让我们开始使用 Hooks 定义函数组件。
+
+# 定义函数组件
+
+现在，我们将同一个组件定义为函数组件：
+
+1.  首先，我们从`src/App.js`文件中删除所有代码。
+
+1.  接下来，在`src/App.js`中，我们导入 React 和**`useState`** Hook：
+
+```jsx
+    import React, { useState } from 'react'
+```
+
+1.  我们从函数定义开始。在我们的例子中，我们没有传递任何参数，因为我们的组件没有任何 props：
+
+```jsx
+    function MyName () {
+```
+
+下一步将是从组件状态中获取`name`变量。但是，我们不能在函数组件中使用`this.state`。我们已经了解到 Hooks 只是 JavaScript 函数，但这究竟意味着什么？这意味着我们可以像使用任何其他 JavaScript 函数一样，直接从函数组件中使用 Hooks！
+
+通过 Hooks 使用状态，我们调用`useState()`函数，并将初始状态作为参数传递。该函数返回一个包含两个元素的数组：
+
++   +   当前状态
+
+    +   设置状态的 setter 函数
+
+1.  我们可以使用解构来将这两个元素分别存储在单独的变量中，如下所示：
+
+```jsx
+            const [ name, setName ] = useState('')
+```
+
+前面的代码等同于以下代码：
+
+```jsx
+            const nameHook = useState('')
+            const name = nameHook[0]
+            const setName = nameHook[1]
+```
+
+1.  现在，我们定义输入处理函数，在其中我们使用`setName` setter 函数：
+
+```jsx
+            function handleChange (evt) {
+                setName(evt.target.value)
+            }
+```
+
+由于我们现在不处理类，因此不再需要重新绑定`this`了！
+
+1.  最后，我们通过从函数返回它来渲染我们的用户界面。然后，我们导出函数组件：
+
+```jsx
+    return (
+        <div>
+            <h1>My name is: {name}</h1>
+            <input type="text" value={name} onChange={handleChange} />
+        </div>
+    )
+}
+
+export default MyName
+```
+
+就这样——我们第一次成功地使用了 Hooks！如您所见，`useState` Hook 是`this.state`和`this.setState`的直接替代品。
+
+让我们通过执行`npm start`来运行我们的应用，并在浏览器中打开`http://localhost:3000`：
+
+![](img/df481a51-52a2-4436-901c-f8ceeb300fa6.png)
+
+我们的第一个使用 Hooks 的 React 应用
+
+在实现同一个应用的类组件和函数组件之后，让我们比较解决方案。
+
+# 示例代码
+
+示例代码可以在`Chapter01/chapter1_2`文件夹中找到。
+
+只需运行`npm install`来安装所有依赖项，然后运行`npm start`来启动应用程序；然后在浏览器中访问`http://localhost:3000`（如果它没有自动打开）。
+
+# 比较解决方案
+
+让我们比较我们的两个解决方案，以便看到类组件和使用 Hooks 的函数组件之间的差异。
+
+# 类组件
+
+类组件使用`constructor`方法来定义状态，并且需要重新绑定`this`以便将处理程序方法传递给`input`字段。完整的类组件代码如下所示：
+
+```jsx
+import React from 'react'
+
+class MyName extends React.Component {
+    constructor (props) {
+        super(props)
+        this.state = { name: '' }
+
+        this.handleChange = this.handleChange.bind(this)
+    }
+
+    handleChange (evt) {
+        this.setState({ name: evt.target.value })
+    }
+
+    render () {
+        const { name } = this.state
+        return (
+            <div>
+                <h1>My name is: {name}</h1>
+                <input type="text" value={name} onChange={this.handleChange} />
+            </div>
+        )
+    }
+}
+
+export default MyName
+```
+
+正如我们所见，类组件需要大量的样板代码来初始化`state`对象和处理函数。
+
+现在，让我们来看一下函数组件。
+
+# 使用 Hook 的函数组件
+
+函数组件使用`useState` Hook，因此我们不需要处理`this`或`constructor`方法。完整的函数组件代码如下所示：
+
+```jsx
+import React, { useState } from 'react'
+
+function MyName () {
+    const [ name, setName ] = useState('')
+
+    function handleChange (evt) {
+        setName(evt.target.value)
+    }
+
+    return (
+        <div>
+            <h1>My name is: {name}</h1>
+            <input type="text" value={name} onChange={handleChange} />
+        </div>
+    )
+}
+
+export default MyName
+```
+
+正如我们所见，钩子使我们的代码更加简洁，更容易推理。我们不再需要担心内部工作原理；我们可以简单地通过访问`useState`函数来使用状态！
+
+# 钩子的优势
+
+让我们回顾一下 React 的第一原则：
+
+声明性：我们不是告诉 React 如何做事情，而是告诉它我们想要它做什么。因此，我们可以轻松设计我们的应用程序，而 React 将有效地更新和渲染数据变化时恰好需要的组件。
+
+正如我们在本章中学到的，钩子允许我们编写告诉 React 我们想要什么的代码。然而，使用类组件时，我们需要告诉 React 如何做事情。因此，钩子比类组件更具声明性，使它们更适合 React 生态系统。
+
+钩子因其声明性，使得 React 能够对我们的代码进行各种优化，因为分析函数和函数调用比分析类及其复杂的`this`行为更容易。此外，钩子使得抽象和在组件之间共享常见的有状态逻辑变得更加容易。通过使用钩子，我们可以避免使用渲染属性和高阶组件。
+
+我们可以看到，钩子不仅使我们的代码更加简洁，而且对开发者来说更容易推理，它们还使代码更容易为 React 优化。
+
+# 迁移到钩子
+
+现在，您可能会想：这是否意味着类组件已经过时，我们现在需要将所有内容迁移到钩子？当然不是——钩子是完全可选的。您可以在一些组件中尝试钩子，而不需要重写任何其他代码。React 团队目前也没有计划删除类组件。
+
+现在不必急于将所有内容迁移到钩子。建议您在某些组件中逐步采用钩子，这些组件将最有用。例如，如果您有许多处理类似逻辑的组件，您可以将逻辑提取到钩子中。您还可以在类组件旁边使用带有钩子的函数组件。
+
+此外，钩子是 100%向后兼容的，并提供了一个直接的 API，用于您已经了解的所有 React 概念：**props**、**state**、**context**、**refs**和**生命周期**。此外，钩子提供了新的方式来组合这些概念，并以一种不会导致包装器地狱或类似问题的方式更好地封装它们的逻辑。我们将在本书后面了解更多关于这方面的内容。
+
+# 钩子的思维方式
+
+钩子的主要目标是解耦有状态逻辑和渲染逻辑。它们允许我们在单独的函数中定义逻辑并在多个组件中重用它们。使用钩子，我们不需要为了实现有状态逻辑而改变我们的组件层次结构。不再需要定义一个单独的组件来为多个组件提供状态逻辑，我们可以简单地使用一个钩子！
+
+然而，Hooks 需要与经典 React 开发完全不同的思维方式。我们不应该再考虑组件的生命周期。相反，我们应该考虑数据流。例如，我们可以告诉 Hooks 在某些 props 或其他 Hooks 的值发生变化时触发。我们将在第四章《使用 Reducer 和 Effect Hooks》中学习更多关于这个概念的内容。我们也不应该再根据生命周期来拆分组件。相反，我们可以使用 Hooks 来处理常见的功能，如获取数据或设置订阅。
+
+# Hooks 的规则
+
+Hooks 非常灵活。然而，使用 Hooks 存在一定的限制，我们应该始终牢记：
+
++   Hooks 只能用于函数组件，不能用于类组件
+
++   Hook 定义的顺序很重要，需要保持不变；因此，我们不能将 Hooks 放在 `if` 条件语句、循环或嵌套函数中
+
+我们将在本书中更详细地讨论这些限制，以及如何绕过它们。
+
+# 各种 Hooks 的概述
+
+正如我们在上一节中学到的，Hooks 提供了直接访问所有 React 概念的 API。此外，我们可以定义自己的 Hooks，以便在不编写高阶组件的情况下封装逻辑，从而避免包装器地狱。在本节中，我们将概述将在本书中学习的各种 Hooks。
+
+# React 提供的 Hooks
+
+React 已经为不同的功能提供了各种 Hooks。有三个基本 Hooks 和一些额外的 Hooks。
+
+# 基本 Hooks
+
+基本 Hooks 提供了有状态 React 应用中最常用的功能。它们如下：
+
++   `useState`
+
++   `useEffect`
+
++   `useContext`
+
+让我们在接下来的章节中逐一了解这些内容。
+
+# useState
+
+我们已经使用过这个 Hook。它返回一个有状态的值（`state`）和一个设置函数（`setState`）以便更新值。
+
+`useState` Hook 用于处理 React 中的 `state`。我们可以这样使用它：
+
+```jsx
+import { useState } from 'react'
+
+const [ state, setState ] = useState(initialState)
+```
+
+`useState` Hook 取代了 `this.state` 和 `this.setState()`。
+
+# useEffect
+
+这个 Hook 的工作方式类似于在 `componentDidMount` 和 `componentDidUpdate` 上添加一个函数。此外，Effect Hook 允许从中返回一个清理函数，其工作方式类似于在 `componentWillUnmount` 上添加一个函数。
+
+`useEffect` Hook 用于处理有副作用的代码，如定时器、订阅、请求等。我们可以这样使用它：
+
+```jsx
+import { useEffect } from 'react'
+
+useEffect(didUpdate)
+```
+
+`useEffect` Hook 取代了 `componentDidMount`、`componentDidUpdate` 和 `componentWillUnmount` 方法。
+
+# useContext
+
+这个 Hook 接受一个上下文对象并返回当前的上下文值。
+
+`useContext` Hook 用于处理 React 中的上下文。我们可以这样使用它：
+
+```jsx
+import { useContext } from 'react'
+
+const value = useContext(MyContext)
+```
+
+`useContext` Hook 取代了上下文消费者。
+
+# 额外的 Hooks
+
+额外的 Hooks 要么是基本 Hooks 的更通用变体，要么是为某些边缘情况所需的。我们将要查看的额外 Hooks 如下：
+
++   `useRef`
+
++   `useReducer`
+
++   `useMemo`
+
++   `useCallback`
+
++   `useLayoutEffect`
+
++   `useDebugValue`
+
+让我们在以下部分中深入研究这些额外的钩子。
+
+# useRef
+
+此钩子返回一个可变的 `ref` 对象，其中 `.current` 属性被初始化为传入的参数（`initialValue`）。我们可以这样使用它：
+
+```jsx
+import { useRef } from 'react'
+
+const refContainer = useRef(initialValue)
+```
+
+`useRef` 钩子用于处理 React 中元素和组件的引用。我们可以通过将 `ref` 属性传递给元素或组件来设置引用，如下所示：`<ComponentName ref={refContainer} />`
+
+# useReducer
+
+此钩子是 `useState` 的替代品，与 Redux 库的工作方式类似。我们可以这样使用它：
+
+```jsx
+import { useReducer } from 'react'
+
+const [ state, dispatch ] = useReducer(reducer, initialArg, init)
+```
+
+`useReducer` 钩子用于处理复杂的状态逻辑。
+
+# useMemo
+
+记忆化是一种优化技术，其中函数调用的结果被缓存，然后在再次出现相同输入时返回。`useMemo` 钩子允许我们计算一个值并将其记忆化。我们可以这样使用它：
+
+```jsx
+import { useMemo } from 'react'
+
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b])
+```
+
+`useMemo` 钩子在避免重新执行昂贵操作时非常有用，有助于优化。
+
+# useCallback
+
+此钩子允许我们传递内联回调函数和依赖项数组，并返回回调函数的记忆化版本。我们可以这样使用它：
+
+```jsx
+import { useCallback } from 'react'
+
+const memoizedCallback = useCallback(
+    () => {
+        doSomething(a, b)
+    },
+    [a, b]
+)
+```
+
+`useCallback` 钩子在将回调传递给优化的子组件时非常有用。它与 `useMemo` 钩子类似，但对于回调函数。
+
+# useLayoutEffect
+
+这个钩子与 `useEffect` 相同，但它只在所有 **文档对象模型**（**DOM**）突变后触发。我们可以这样使用它：
+
+```jsx
+import { useLayoutEffect } from 'react'
+
+useLayoutEffect(didUpdate)
+```
+
+`useLayoutEffect` 钩子可用于读取 DOM 信息。
+
+尽可能使用 `useEffect` 钩子，因为 `useLayoutEffect` 会阻止视觉更新并减慢应用程序速度。
+
+最后，我们将研究在撰写本文时由 React 提供的最后一个钩子。
+
+# useDebugValue
+
+此钩子可用于在创建自定义钩子时在 React DevTools 中显示标签。我们可以这样使用它：
+
+```jsx
+import { useDebugValue } from 'react'
+
+useDebugValue(value)
+```
+
+确保在自定义钩子中使用此钩子以显示钩子的当前状态，因为它将使调试它们变得更加容易。
+
+# Community Hooks
+
+除了 React 提供的所有钩子之外，社区已经发布了许多库。这些库也提供钩子。我们将要研究的钩子如下：
+
++   `useInput`
+
++   `useResource`
+
++   `useDimensions`
+
++   Navigation Hooks
+
++   生命周期钩子
+
++   Timer Hooks
+
+让我们在以下部分中概述这些钩子是什么。
+
+# useInput
+
+此钩子用于轻松实现输入处理，并将 `input` 字段的状态与变量同步。它可以这样使用：
+
+```jsx
+import { useInput } from 'react-hookedup'
+
+function App () {
+    const { value, onChange } = useInput('')
+
+    return <input value={value} onChange={onChange} />
+}
+```
+
+如我们所见，钩子极大地简化了在 React 中处理输入字段的过程。
+
+# useResource
+
+此钩子可用于通过请求在我们的应用程序中实现异步数据加载。我们可以这样使用它：
+
+```jsx
+import { useRequest } from 'react-request-hook'
+
+const [profile, getProfile] = useResource(id => ({
+    url: `/user/${id}`,
+    method: 'GET'
+})
+```
+
+如我们所见，使用专门处理获取数据的钩子非常简单。
+
+# Navigation Hooks
+
+这些钩子是 Navi 库的一部分，用于在 React 中通过钩子实现路由。Navi 库提供了许多与路由相关的钩子。我们将在本书后面深入学习通过钩子进行路由。我们可以这样使用它们：
+
+```jsx
+import { useCurrentRoute, useNavigation } from 'react-navi'
+
+const { views, url, data, status } = useCurrentRoute()
+const { navigate } = useNavigation()
+```
+
+正如我们所见，钩子使得路由处理变得更加容易。
+
+# 生命周期钩子
+
+`react-hookedup`库提供了各种钩子，包括 React 的所有生命周期监听器。
+
+请注意，在使用钩子开发时不建议从组件生命周期的角度思考。这些钩子只是提供了一种快速重构现有组件到钩子的方法。然而，在开发新组件时，建议你考虑数据流和依赖关系，而不是生命周期。
+
+这里我们列出了两个，但实际上库中提供了更多的钩子，我们将在后面学习。我们可以这样使用`react-hookedup`提供的钩子：
+
+```jsx
+import { useOnMount, useOnUnmount } from 'react-hookedup'
+
+useOnMount(() => { ... })
+useOnUnmount(() => { ... })
+```
+
+正如我们所见，钩子可以直接替换类组件中的生命周期方法。
+
+# 计时器钩子
+
+`react-hookedup`库还提供了用于`setInterval`和`setTimeout`的钩子。这些钩子的工作方式类似于直接调用`setTimeout`或`setInterval`，但作为 React 钩子，它将在重新渲染之间保持持久性。如果我们直接在函数组件中定义计时器而没有使用钩子，我们将在每次组件重新渲染时重置计时器。
+
+我们可以将毫秒数作为第二个参数传递。我们可以这样使用它们：
+
 ```jsx
 import { useInterval, useTimeout } from 'react-hookedup'
 
