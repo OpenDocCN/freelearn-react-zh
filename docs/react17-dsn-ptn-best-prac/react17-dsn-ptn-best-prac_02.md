@@ -1,4 +1,4 @@
-# 用 React 迈出第一步
+# 第一章：用 React 迈出第一步
 
 你好，读者们！
 
@@ -16,7 +16,7 @@
 
 +   TypeScript 如何改变了游戏
 
-# 第三章：技术要求
+# 技术要求
 
 为了遵循本书，您需要具有一些使用终端运行几个 Unix 命令的最小经验。此外，您需要安装 Node.js。您有两个选项。第一个是直接从官方网站[`nodejs.org`](https://nodejs.org)下载 Node.js，第二个选项（推荐）是从[`github.com/nvm-sh/nvm`](https://github.com/nvm-sh/nvm)安装**Node Version Manager**（**NVM**）。
 
