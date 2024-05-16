@@ -985,23 +985,6 @@ render () {
 
 ![](img/Image00036.jpg)
 
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # 开始我们的 WYSIWYG 工作
 
@@ -2460,23 +2443,6 @@ let newArticle = {
 
 第二个返回是在编辑模式下；如果是，那么他可以通过点击`RaisedButton`组件并调用`onClick`方法的`_articleSubmit`来提交。
 
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # 编辑文章的能力（EditArticleView 组件）
 

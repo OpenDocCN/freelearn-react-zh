@@ -32,23 +32,6 @@
 
 我们将使用在 2015 年和 2016 年获得了很多关注的非常现代的应用程序堆栈-我相信你将在整本书中学到的堆栈在未来几年会更受欢迎，因为我们公司*MobileWebPro.pl*看到了在之前列出的技术中出现了巨大的兴趣激增。你将从这本书中获益良多，并且会掌握构建强大的全栈应用程序的最新方法。
 
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # 关于我们的技术堆栈更多信息
 
@@ -522,24 +505,6 @@ console.log(&grave;Started on port ${app.server.address().port}&grave;);
 export default app;
 
 ```
-
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # 如何运行项目的摘要
 
@@ -1232,23 +1197,6 @@ npm run dev
 
 太棒了，我们在 Redux 中有一个静态应用程序！现在是时候使用 Falcor 从我们的 MongoDB 数据库中获取数据了。
 
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # Falcor 的基本概念
 
@@ -2300,23 +2248,6 @@ const Article = mongoose.model('Article', articleSchema, 'articles');
 
 请注意，在`const singleArticleObject = articlesArrayFromDB[index].toObject();`中，我们使用了`.toObject`方法。这对于使其工作非常重要。
 
-# 读累了记得休息一会哦~
-
-**公众号：古德猫宁李**
-
-+   电子书搜索下载
-
-+   书单分享
-
-+   书友学习交流
-
-**网站：**[沉金书屋 https://www.chenjin5.com](https://www.chenjin5.com)
-
-+   电子书搜索下载
-
-+   电子书打包资源分享
-
-+   学习资源分享
 
 # 与服务器/routes.js 和 package.json 双重检查
 
