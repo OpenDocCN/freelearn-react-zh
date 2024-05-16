@@ -50,46 +50,17 @@
 
 我们可以先添加适当的`div`标签：
 
-```jsx
-render() {
-  return (
-    <div id="ChatContainer">
-      <Header>
-        <button className="red" onClick={this.handleLogout}>
-          Logout
-        </button>
-      </Header>
-      <div id="message-container">
-
- </div>
- <div id="chat-input">
-
- </div>
-     </div>
-   );
-}
-```
+[PRE0]
 
 提醒确保你的 ID 和 classNames 与我的相同，以免你的 CSS 不同（甚至更糟）。
 
 我们首先填写输入框。在`div#chat-input`内，让我们放置一个`textarea`，并设置占位符为“添加你的消息…”：
 
-```jsx
-<textarea placeholder="Add your message..." />
-```
+[PRE1]
 
 我们将配置它，以允许用户按“Enter”键发送消息，但最好也有一个发送按钮。在`textarea`下面，添加一个`button`，在其中，我们将添加一个`SVG`图标：
 
-```jsx
-<div id="chat-input">
-  <textarea placeholder="Add your message..." />
-  <button>
- <svg viewBox="0 0 24 24">
- <path fill="#424242" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
- </svg>
- </button>
-</div>
-```
+[PRE2]
 
 确保你的`path fill`和`svg viewBox`属性与提到的相同。
 
@@ -97,9 +68,7 @@ SVG 是一种可以缩放（放大）而不会失真的图像类型。在这种�
 
 为了 CSS 的目的，让我们也给我们的`div#ChatContainer`添加`inner-container`类：
 
-```jsx
-<div id="ChatContainer" className="inner-container">
-```
+[PRE3]
 
 如果一切顺利，你的应用现在应该是这个样子的：
 
@@ -149,48 +118,25 @@ React 的一个重要原则是所谓的**单向数据流**。
 
 将此添加到`ChatContainer.js`：
 
-```jsx
-state = { newMessage: '' };
-```
+[PRE4]
 
 还要添加一个处理它的方法：
 
-```jsx
-handleInputChange = e => {
-  this.setState({ newMessage: e.target.value });
-};
-```
+[PRE5]
 
 现在，修改我们的`textarea`：
 
-```jsx
-<textarea
-    placeholder="Add your message..."
-    onChange={this.handleInputChange}
-    value={this.state.newMessage} 
-/>
-```
+[PRE6]
 
 最佳实践说，当 JSX 元素具有两个以上的`props`（或`props`特别长）时，应该将其多行化。
 
 当用户点击发送时，我们希望将消息发送给`App`，然后`App`会将其发送到 Firebase。之后，我们重置字段：
 
-```jsx
-handleSubmit = () => {
-   this.props.onSubmit(this.state.newMessage);
-   this.setState({ newMessage: ‘’ });
-};
-```
+[PRE7]
 
 我们还没有在`App`中添加这个`onSubmit`属性函数，但我们很快就可以做到：
 
-```jsx
-<button onClick={this.handleSubmit}>
-  <svg viewBox="0 0 24 24">
-    <path fill="#424242" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-  </svg>
-</button>
-```
+[PRE8]
 
 然而，我们也希望让用户通过按下*Enter*来提交。我们该怎么做呢？
 
@@ -200,24 +146,11 @@ handleSubmit = () => {
 
 让我们看看它的效果：
 
-```jsx
-<textarea
-    placeholder="Add your message..."
-    onChange={this.handleInputChange}
-    onKeyDown={this.handleKeyDown}
-    value={this.state.newMessage} />
-```
+[PRE9]
 
 以下是这个事件的处理程序：
 
-```jsx
-handleKeyDown = e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    this.handleSubmit();
-  }
-}
-```
+[PRE10]
 
 事件处理程序（`handleKeyDown`）会自动传入一个事件作为第一个参数。这个事件有一个名为`key`的属性，它是一个指示按键值的字符串。在提交消息之前，我们还需要阻止默认行为（在`textarea`中创建新行）。
 
@@ -225,76 +158,15 @@ handleKeyDown = e => {
 
 在我们转到`App.js`之前，这是`ChatContainer`的当前状态：
 
-```jsx
-import React, { Component } from 'react';
-import Header from './Header';
-
-export default class ChatContainer extends Component {
-  state = { newMessage: '' };
-
-  handleLogout = () => {
-    firebase.auth().signOut();
-  };
-
-  handleInputChange = e => {
-    this.setState({ newMessage: e.target.value });
-  };
-
-  handleSubmit = () => {
-    this.props.onSubmit(this.state.newMessage);
-    this.setState({ newMessage: '' });
-  };
-
-  handleKeyDown = e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      this.handleSubmit();
-    }
-  };
-
-  render() {
-    return (
-      <div id="ChatContainer" className="inner-container">
-        <Header>
-          <button className="red" onClick={this.handleLogout}>
-            Logout
-          </button>
-        </Header>
-        <div id="message-container" />
-        <div id="chat-input">
-          <textarea
-            placeholder="Add your message..."
-            onChange={this.handleInputChange}
-            onKeyDown={this.handleKeyDown}
-            value={this.state.newMessage}
-          />
-          <button onClick={this.handleSubmit}>
-            <svg viewBox="0 0 24 24">
-              <path fill="#424242" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    );
-  }
-}
-```
+[PRE11]
 
 好的，让我们添加最后一个链接来创建一条消息。在`App.js`中，我们需要为`onSubmit`事件添加一个处理程序，然后将其作为属性传递给`ChatContainer`：
 
-```jsx
-// in App.js
-handleSubmitMessage = msg => {
-  // Send to database
-  console.log(msg);
-};
-```
+[PRE12]
 
 我们想要将一个等于这个方法的`onSubmit`属性传递给`ChatContainer`，但等一下，我们当前渲染的`ChatContainer`如下：
 
-```jsx
-<Route exact path="/" component={ChatContainer} />
-```
+[PRE13]
 
 `ChatContainer`本身是我们`Route`上的一个属性。我们怎么能给`ChatContainer`任何`props`呢？
 
@@ -306,13 +178,7 @@ handleSubmitMessage = msg => {
 
 让我们将我们的`Route`切换到这种方法：
 
-```jsx
-<Route
-  exact
-  path="/"
-  render={() => <ChatContainer onSubmit={this.handleSubmitMessage} />}
-/>
-```
+[PRE14]
 
 前面的例子使用了一个带有隐式返回的 ES6 箭头函数。这与写`() => { return <ChatContainer onSubmit={this.handleSubmitMessage} /> }`或者在 ES5 中写`function() { return <ChatContainer onSubmit={this.handleSubmitMessage} /> }`是一样的。
 
@@ -340,18 +206,7 @@ Firebase 会接管，将数据保存到 NoSQL 数据库，并向应用程序的�
 
 我们的用户需要能够看到谁发送了消息（最好是电子邮件地址），并能够导航到他们的`users/:id`页面。因此，我们需要保存消息作者的电子邮件地址以及唯一的用户 ID。让我们再加上一个`timestamp`以确保万无一失：
 
-```jsx
-// App.js
-handleSubmitMessage = msg => {
-  const data = {
-    msg,
-    author: this.state.user.email,
-    user_id: this.state.user.uid,
-    timestamp: Date.now()
-  };
-  // Send to database
-}
-```
+[PRE15]
 
 前面的例子使用了 ES6 的属性简写来表示消息字段。我们可以简单地写`{ msg }`，而不是`{ msg: msg }`。
 
@@ -359,20 +214,7 @@ handleSubmitMessage = msg => {
 
 好的，让我们发送出去！：
 
-```jsx
-handleSubmitMessage = (msg) => {
-  const data = {
-    msg,
-    author: this.state.user.email,
-    user_id: this.state.user.uid,
-    timestamp: Date.now()
-  };
-  firebase
-      .database()
-      .ref('messages/')
-      .push(data);
-}
-```
+[PRE16]
 
 在我们测试之前，让我们打开 Firebase 控制台[console.firebase.google.com](http://console.firebase.google.com)并转到数据库选项卡。在这里，我们可以实时查看我们的数据库数据的表示，以便检查我们的消息是否被正确创建。
 
@@ -400,26 +242,7 @@ handleSubmitMessage = (msg) => {
 
 我们将用我们的消息引用做同样的事情，尽管语法有点不同：
 
-```jsx
-class App extends Component {
-  state = { user: null, messages: [] }
-
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user });
-      } else {
-       this.props.history.push('/login')
-      }
-    });
-    firebase
- .database()
- .ref('/messages')
- .on('value', snapshot => {
- console.log(snapshot);
- });
-  }
-```
+[PRE17]
 
 我们使用`.on`函数来监听数据库中的`'value'`事件。然后我们的回调被称为一个叫做`snapshot`的参数。让我们把这个插入进去，然后发送另一条消息，看看我们的快照是什么样子的：
 
@@ -429,11 +252,7 @@ class App extends Component {
 
 快照是数据库结构`/messages`的一个图像。我们可以通过调用`val()`来访问一个更可读的形式：
 
-```jsx
-firebase.database().ref('/messages').on('value', snapshot => {
-  console.log(snapshot.val());
-});
-```
+[PRE18]
 
 ![](img/00043.jpeg)
 
@@ -445,39 +264,11 @@ firebase.database().ref('/messages').on('value', snapshot => {
 
 让我们将这个提取到一个新的函数中：
 
-```jsx
-class App extends Component {
-  state = { user: null, messages: [] }
-
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user });
-      } else {
-       this.props.history.push('/login')
-      }
-    });
-    firebase
-      .database()
-      .ref('/messages')
-      .on('value', snapshot => {
-        this.onMessage(snapshot);
-      });
-  }
-```
+[PRE19]
 
 还有新的方法：
 
-```jsx
-  onMessage = snapshot => {
-    const messages = Object.keys(snapshot.val()).map(key => {
-      const msg = snapshot.val()[key];
-      msg.id = key;
-      return msg;
-    });
-    console.log(messages);
-  };
-```
+[PRE20]
 
 在我们的 `console.log` 中，我们最终得到了一个带有 ID 的消息数组：
 
@@ -485,105 +276,15 @@ class App extends Component {
 
 最后一步是将其保存到状态中：
 
-```jsx
-onMessage = (snapshot) => {
-  const messages = Object.keys(snapshot.val()).map(key => {
-    const msg = snapshot.val()[key]
-    msg.id = key
-    return msg
-  });
-  this.setState({ messages });
-}
-```
+[PRE21]
 
 现在，我们可以将消息传递给 `ChatContainer`，并开始显示它们：
 
-```jsx
-<Route
-  exact
-  path="/"
-  render={() => (
-    <ChatContainer
-      onSubmit={this.handleSubmitMessage}
-      messages={this.state.messages}
-    />
-  )}
-/>
-```
+[PRE22]
 
 我们对 `App.js` 进行了许多更改。以下是当前的代码：
 
-```jsx
-import React, { Component } from 'react';
-import { Route, withRouter } from 'react-router-dom';
-import LoginContainer from './LoginContainer';
-import ChatContainer from './ChatContainer';
-import UserContainer from './UserContainer';
-import './app.css';
-
-class App extends Component {
-  state = { user: null, messages: [] };
-
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ user });
-      } else {
-        this.props.history.push('/login');
-      }
-    });
-    firebase
-      .database()
-      .ref('/messages')
-      .on('value', snapshot => {
-        this.onMessage(snapshot);
-      });
-  }
-
-  onMessage = snapshot => {
-    const messages = Object.keys(snapshot.val()).map(key => {
-      const msg = snapshot.val()[key];
-      msg.id = key;
-      return msg;
-    });
-    this.setState({ messages });
-  };
-
-  handleSubmitMessage = msg => {
-    const data = {
-      msg,
-      author: this.state.user.email,
-      user_id: this.state.user.uid,
-      timestamp: Date.now()
-    };
-    firebase
-      .database()
-      .ref('messages/')
-      .push(data);
-  };
-
-  render() {
-    return (
-      <div id="container">
-        <Route path="/login" component={LoginContainer} />
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <ChatContainer
-              onSubmit={this.handleSubmitMessage}
-              messages={this.state.messages}
-            />
-          )}
-        />
-        <Route path="/users/:id" component={UserContainer} />
-      </div>
-    );
-  }
-}
-
-export default withRouter(App);
-```
+[PRE23]
 
 # 显示我们的消息
 
@@ -593,25 +294,11 @@ export default withRouter(App);
 
 在我们的 `message-container` 中，我们创建了开头和结尾的花括号：
 
-```jsx
-<div id="message-container">
-  {
-
-  }
-</div>
-```
+[PRE24]
 
 然后，我们在消息数组上调用 `map`，并传入一个函数来创建新的消息 `div`：
 
-```jsx
-<div id="message-container">
-  {this.props.messages.map(msg => (
-    <div key={msg.id} className="message">
-      <p>{msg.msg}</p>
-    </div>
-  ))}
-</div>
-```
+[PRE25]
 
 如果一切顺利，你应该看到以下内容，包括你发送的所有消息：
 
@@ -629,962 +316,13 @@ export default withRouter(App);
 
 让我们增加一些功能，并在消息下方显示作者姓名，并附带到他们的用户页面的链接。我们可以使用 React Router 的 `Link` 组件来实现；它类似于锚标签（`<a>`），但针对 React Router 进行了优化：
 
-```jsx
-import { Link } from 'react-router-dom';
-```
+[PRE26]
 
 然后，在下面添加它：
 
-```jsx
-<div id="message-container">
-  {this.props.messages.map(msg => (
-    <div key={msg.id} className="message">
-      <p>{msg.msg}</p>
-      <p className="author">
- <Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
- </p>
-    </div>
-  ))}
-</div>
-```
+[PRE27]
 
-![](img/00046.jpeg) `Link` 上的 `to` 属性使用了 ES6 字符串插值。如果你用反引号包裹你的字符串（```jsx) instead of quotation marks, you can use `${VARIABLE}` to embed variables right into it.
-
-Now, we will make our messages look even better!
-
-# Message display improvements
-
-Let's take some time to do some quick UI improvements to our message display, before we move on to the user profile page.
-
-# Multiple users
-
-If you try logging out and signing in with a new user, all the messages from all users are displayed, as shown:
-
-![](img/00047.jpeg)
-
-There's no differentiation between my messages, and the messages of other users. The classic chat application pattern is to put one user's messages on one side, and one on the other. Our CSS is all ready to handle that—we just have to assign the class "mine" to messages that match the current user.
-
-Since we have access to the email of the message author in `msg.author`, we can compare that to the user we have stored in the state of `App`. Let’s pass that down as a prop to `ChatContainer`:
-
-```
-
-<Route
-
-exact
-
-path="/"
-
-render={() => (
-
-<ChatContainer
-
-onSubmit={this.handleSubmitMessage}
-
-user={this.state.user}
-
-messages={this.state.messages}
-
-/>
-
-)}
-
-/>
-
-```jsx
-
-Then, we can add a conditional in our `className` property:
-
-```
-
-<div id="message-container">
-
-{this.props.messages.map(msg => (();?>
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email === msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-<p className="author">
-
-<Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
-
-</p>
-
-</div>
-
-))}
-
-</div>
-
-```jsx
-
-This uses ES6 string interpolation along with short-circuit evaluation to create the effect we want. Those are the fancy terms for what boils down to this: if the message author matches the user email in `state`, set the `className` to `message mine`; otherwise, set it to `message`.
-
-It should end up looking like this:
-
-![](img/00048.jpeg)
-
-# Batching user messages
-
-In the preceding screenshot, you'll notice that we display the author email under each message, even if two messages in the row have the same author. Let's get tricky, and make it so that we group messages from the same author together.
-
-In other words, we only want to display the author email if the next message is not by the same author:
-
-```
-
-<div id="message-container">
-
-{this.props.messages.map(msg => (
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email === msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-// 只有下一条消息的作者与此消息的作者不同，才返回以下内容：<p className="author">
-
-<Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
-
-</p>
-
-</div>
-
-))}
-
-</div>
-
-```jsx
-
-How can we do this? We need a way to check the next message in the array, from the current message.
-
-Luckily, the `Array.map()` function passes the index to our callback as the second element. We can use it, as illustrated:
-
-```
-
-<div id="message-container">
-
-{this.props.messages.map((msg, i) => (
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email === msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-{(!this.props.messages[i + 1] ||
-
-this.props.messages[i + 1].author !== msg.author) && (
-
-<p className="author">
-
-<Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
-
-</p>
-
-)}
-
-</div>
-
-))}
-
-</div>
-
-```jsx
-
-Now, we're saying: "If there is a next message, and the next message's author is not the same as the current message's author, show the author for this message."
-
-However, this is a lot of complex logic in our `render` method. Let's extract it to a method:
-
-```
-
-<div id="message-container">
-
-{this.props.messages.map((msg, i) => (
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email === msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-{this.getAuthor(msg, this.props.messages[i + 1])}
-
-</div>
-
-))}
-
-</div>
-
-```jsx
-
-Also, the method itself:
-
-```
-
-getAuthor = (msg, nextMsg) => {
-
-if (!nextMsg || nextMsg.author !== msg.author) {
-
-return (
-
-<p className="author">
-
-<Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
-
-</p>
-
-);
-
-}
-
-};
-
-```jsx
-
-Our messages are now grouped like this:
-
-![](img/00049.jpeg)
-
-# Scrolling down
-
-Try making your browser smaller so that your list of messages is almost cut off; then, submit another message. Note that you have to scroll down to see it, if it's past the cut off of the message container. This is bad UX. Let's make it so that we automatically scroll down when a new message arrives.
-
-In this section, we will dive into two powerful React concepts: the `componentDidUpdate` method, and refs.
-
-Let's start by discussing what we want to achieve. We want our message container to be scrolled down to the bottom so that the most recent messages are always in view (unless the user decides to scroll up to see older messages). This means we need the message container to scroll down in two situations:
-
-*   When the first component is rendered
-*   When new messages arrive
-
-Let’s start with the first use case. We will need a React life cycle method--one we’ve already used. We will add a `componentDidMount` method to our `ChatContainer`, just like we did with `App`.
-
-Let's define it, and a `scrollToBottom` method as well:
-
-```
-
-export default class ChatContainer extends Component {
-
-state = { newMessage: '' };
-
-componentDidMount() {
-
-this.scrollToBottom();
-
-}
-
-scrollToBottom = () => {
-
-};
-
-```jsx
-
-We also want to trigger the `scrollToBottom` method whenever new messages arrive, have appeared on the screen. React gives us another method to deal with this situation--`componentDidUpdate`. This method is called whenever your React component updates due to new `props` or state. The best part is that the method gets the previous `props` passed as the first argument, so we can compare them and find the difference, as follows:
-
-```
-
-componentDidUpdate(previousProps) {
-
-if (previousProps.messages.length !== this.props.messages.length) {
-
-this.scrollToBottom();
-
-}
-
-}
-
-```jsx
-
-We look at the length of the messages array in the previous `props`, and compare it to the length of the messages array in the current `props`. If it has changed, we scroll to the bottom.
-
-Okay, all that looks good. Let's go ahead and get our `scrollToBottom` method working.
-
-# React refs
-
-Refs in React are a way to grab a particular DOM element. For those familiar with jQuery, refs bridge the gap between the React approach of creating elements with props and the jQuery approach of grabbing things from the DOM and manipulating them.
-
-We can add a `ref` to any JSX element we want to use later (that we want to refer to later). Let's add one to our message container. The `ref` prop is always a function, which is called with the element in question, and then used to assign that element to a property of the component, as shown:
-
-```
-
-<div
-
-id="message-container"
-
-ref={element => {
-
-this.messageContainer = element;
-
-}}>
-
-```jsx
-
-Inside our `scrollToBottom` method, we use `ReactDOM.findDOMNode` to grab the element in question (don't forget to import react-dom!):
-
-```
-
-import ReactDOM from 'react-dom';
-
-```jsx
-
-```
-
-scrollToBottom = () => {
-
-const messageContainer = ReactDOM.findDOMNode(this.messageContainer);
-
-}
-
-```jsx
-
-In the next section, we will make it such that we only show our message container when the messages are loaded. For that reason, we need an `if` statement to check whether our `messageContainer` DOM node currently exists. Once that is done, we can set the `messageContainer.scrollTop` (how far it is currently scrolled down) to its height so that it’s at the bottom:
-
-```
-
-scrollToBottom = () => {
-
-const messageContainer = ReactDOM.findDOMNode(this.messageContainer);
-
-if (messageContainer) {
-
-messageContainer.scrollTop = messageContainer.scrollHeight;
-
-}
-
-}
-
-```jsx
-
-Now if you try reducing the size of your browser and sending a message, you should always be taken to the bottom of the message container so that it's automatically in view. Nice!
-
-# Loading indicator
-
-Firebase is pretty quick to load, but if our users are on slow connections, they will see a blank screen until their messages load, and be wondering, "Where are all my awesome chats?" Let's give them a loading indicator.
-
-Inside our `ChatContainer`, we only want to show the messages if a prop called `messagesLoaded` is true (which we'll define in a moment). We will make the rendering of our message container conditional on that prop. We can do so using a **ternerary** statement.
-
-Ternerary statements in JavaScript are a short way of doing if else. Instead of if (true) `{ // this code }`, else `{ // that code }`, we can write `true ? // this code : // that code`, which is short and sweet.
-
-The code looks like this:
-
-```
-
-// 聊天容器的开始
-
-<Header>
-
-<button className="red" onClick={this.handleLogout}>
-
-注销
-
-</button>
-
-</Header>
-
-{this.props.messagesLoaded ? (
-
-<div
-
-id="message-container"
-
-ref={element => {
-
-this.messageContainer = element;
-
-}}>
-
-{this.props.messages.map((msg, i) => (
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email === msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-{this.getAuthor(msg, this.props.messages[i + 1])}
-
-</div>
-
-))}
-
-</div>
-
-) : (
-
-<div id="loading-container">
-
-<img src="/assets/icon.png" alt="logo" id="loader" />
-
-</div>
-
-)}
-
-<div id="chat-input">
-
-// Rest of ChatContainer
-
-```jsx
-
-Take a moment to read this closely, and ensure that you understand exactly what's going on. Ternerary statements are common in React, simply because they make it easy to conditionally render JSX. If everything is right, you should see the following, with a pulsing animation to the logo:
-
-![](img/00050.jpeg)
-
-The next step is to update the `messagesLoaded` prop when the messages load. Let's hop over to `App.js`.
-
-The logic here is simple--when we receive a message value from the Firebase database, if we haven't received a value before (in other words, this is the first message we've received), we know that our messages have loaded for the first time:
-
-```
-
-class App extends Component {
-
-state = { user: null, messages: [], messagesLoaded: false };
-
-```jsx
-
-```
-
-componentDidMount() {
-
-firebase.auth().onAuthStateChanged(user => {
-
-if (user) {
-
-this.setState({ user });
-
-} else {
-
-this.props.history.push('/login');
-
-}
-
-});
-
-firebase
-
-.database()
-
-.ref('/messages')
-
-.on('value', snapshot => {
-
-this.onMessage(snapshot);
-
-if (!this.state.messagesLoaded) {
-
-this.setState({ messagesLoaded: true });
-
-}
-
-});
-
-}
-
-```jsx
-
-```
-
-<Route exact path="/" render={() => (
-
-<ChatContainer
-
-messagesLoaded={this.state.messagesLoaded}
-
-onSubmit={this.handleSubmitMessage}
-
-messages={this.state.messages}
-
-用户={this.state.user} />
-
-)} />
-
-```jsx
-
-Now, if you reload the app page, you should briefly see the loading indicator (depending on your internet connection), and then see the messages displayed.
-
-Here's the code for `ChatContainer` so far:
-
-```
-
-import React, { Component } from 'react';
-
-import { Link } from 'react-router-dom';
-
-import ReactDOM from 'react-dom';
-
-import Header from './Header';
-
-export default class ChatContainer extends Component {
-
-state = { newMessage: '' };
-
-componentDidMount() {
-
-this.scrollToBottom();
-
-}
-
-componentDidUpdate(previousProps) {
-
-if (previousProps.messages.length !== this.props.messages.length) {
-
-this.scrollToBottom();
-
-}
-
-}
-
-scrollToBottom = () => {
-
-const messageContainer = ReactDOM.findDOMNode(this.messageContainer);
-
-if (messageContainer) {
-
-messageContainer.scrollTop = messageContainer.scrollHeight;
-
-}
-
-};
-
-handleLogout = () => {
-
-firebase.auth().signOut();
-
-};
-
-handleInputChange = e => {
-
-this.setState({ newMessage: e.target.value });
-
-};
-
-handleSubmit = () => {
-
-this.props.onSubmit(this.state.newMessage);
-
-this.setState({ newMessage: '' });
-
-};
-
-handleKeyDown = e => {
-
-if (e.key === 'Enter') {
-
-e.preventDefault();
-
-this.handleSubmit();
-
-}
-
-};
-
-getAuthor = (msg, nextMsg) => {
-
-if (!nextMsg || nextMsg.author !== msg.author) {
-
-return (
-
-<p className="author">
-
-<Link to={`/users/${msg.user_id}`}>{msg.author}</Link>
-
-</p>
-
-);
-
-}
-
-};
-
-render() {
-
-return (
-
-<div id="ChatContainer" className="inner-container">
-
-<Header>
-
-<button className="red" onClick={this.handleLogout}>
-
-Logout
-
-</button>
-
-</Header>
-
-{this.props.messagesLoaded ? (
-
-<div
-
-id="message-container"
-
-ref={element => {
-
-this.messageContainer = element;
-
-}}>
-
-{this.props.messages.map((msg, i) => (
-
-<div
-
-key={msg.id}
-
-className={`message ${this.props.user.email ===
-
-msg.author &&
-
-'mine'}`}>
-
-<p>{msg.msg}</p>
-
-{this.getAuthor(msg, this.props.messages[i + 1])}
-
-</div>
-
-))}
-
-</div>
-
-) : (
-
-<div id="loading-container">
-
-<img src="/assets/icon.png" alt="logo" id="loader" />
-
-</div>
-
-)}
-
-<div id="chat-input">
-
-<textarea
-
-占位符="添加您的消息..."
-
-onChange={this.handleInputChange}
-
-onKeyDown={this.handleKeyDown}
-
-value={this.state.newMessage}
-
-/>
-
-<button onClick={this.handleSubmit}>
-
-<svg viewBox="0 0 24 24">
-
-<path fill="#424242"
-
-d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-
-</svg>
-
-</button>
-
-</div>
-
-</div>
-
-);
-
-}
-
-}
-
-```jsx
-
-Our app is so close to complete. The last step is the user profile page.
-
-# The Profile page
-
-The code for `UserContainer` will be the same as `ChatContainer`, with two major differences:
-
-*   We only want to show the messages from our messages array that match the ID from the URL parameters
-*   We want to show the author email at the top of page, before any other messages
-
-Firstly, in `App.js`, convert the `UserContainer` route to use the `render` prop, the same as `ChatContainer`, and pass in the following props:
-
-```
-
-<Route
-
-path="/users/:id"
-
-render={({ history, match }) => (
-
-<UserContainer
-
-messages={this.state.messages}
-
-messagesLoaded={this.state.messagesLoaded}
-
-userID={match.params.id}
-
-/>
-
-)}
-
-/>
-
-```jsx
-
-Note that React Router automatically gives us the history and match `props` in our `render` method, which we use here to grab the user ID from the URL parameters.
-
-Then, in `UserContainer`, let’s set up our loading indicator. Also, ensure that you give `UserContainer` a `className` of `inner-container` for CSS purposes:
-
-```
-
-<div id="UserContainer" className="inner-container">
-
-<Header>
-
-<Link to="/">
-
-<button className="red">返回聊天</button>
-
-</Link>
-
-</Header>
-
-{this.props.messagesLoaded ? (
-
-<h1>消息在这里</h1>
-
-) : (
-
-<div id="loading-container">
-
-<img src="/assets/icon.png" alt="logo" id="loader" />
-
-&lt;/div>
-
-)}
-
-</div>
-
-```jsx
-
-For displaying our messages, we only want to show the ones where `msg.user_id` equals our `props.userID`. Instead of our callback for `Array.map()`, we can just add an `if` statement:
-
-```
-
-{this.props.messagesLoaded ? (
-
-<div id="message-container">
-
-{this.props.messages.map(msg => {
-
-if (msg.user_id === this.props.userID) {
-
-return (
-
-<div key={msg.id} className="message">
-
-<p>{msg.msg}</p>
-
-</div>
-
-);
-
-}
-
-})}
-
-</div>
-
-) : (
-
-<div id="loading-container">
-
-<img src="/assets/icon.png" alt="logo" id="loader" />
-
-</div>
-
-)}
-
-```jsx
-
-This should only show messages from the author whose profile we are on. However, we now need to display the author email at the top.
-
-The challenge is that we won't know the user email until we've loaded the messages, and are iterating over the first message that matches the ID, so we can't use the index of `map()`, like we did before, and we can't use a prop.
-
-Instead, we'll add a `class` property to track whether we've shown the user email already.
-
-Declare it at the top of `UserContainer`:
-
-```
-
-export default class UserContainer extends Component {
-
-renderedUserEmail = false;
-
-render() {
-
-return (
-
-```jsx
-
-Then, we'll call a `getAuthor` method in the code:
-
-```
-
-<div id="message-container">
-
-{this.props.messages.map(msg => {
-
-if (msg.user_id === this.props.userID) {
-
-return (
-
-<div key={msg.id} className="message">
-
-{this.getAuthor(msg.author)}
-
-<p>{msg.msg}</p>
-
-</div>
-
-);
-
-}
-
-})}
-
-</div>
-
-```jsx
-
-This checks to see if we've rendered the author already, and if not, returns it:
-
-```
-
-getAuthor = author => {
-
-if (!this.renderedUserEmail) {
-
-this.renderedUserEmail = true;
-
-return <p className="author">{author}</p>;
-
-}
-
-};
-
-```jsx
-
-A little bit of a roundabout route--for our production application, we’d probably want to add more sophisticated logic to only load the messages from that author. However, this will do just fine for our prototype.
-
-Here's the full code for `UserContainer`:
-
-```
-
-import React, { Component } from 'react';
-
-import { Link } from 'react-router-dom';
-
-import Header from './Header';
-
-export default class UserContainer extends Component {
-
-renderedUserEmail = false;
-
-getAuthor = author => {
-
-if (!this.renderedUserEmail) {
-
-this.renderedUserEmail = true;
-
-return <p className="author">{author}</p>;
-
-}
-
-};
-
-render() {
-
-return (
-
-<div id="UserContainer" className="inner-container">
-
-<Header>
-
-<Link to="/">
-
-<button className="red">返回聊天</button>
-
-</Link>
-
-</Header>
-
-{this.props.messagesLoaded ? (
-
-<div id="message-container">
-
-{this.props.messages.map(msg => {
-
-if (msg.user_id === this.props.userID) {
-
-return (
-
-<div key={msg.id} className="message">
-
-{this.getAuthor(msg.author)}
-
-<p>{msg.msg}</p>
-
-</div>
-
-);
-
-}
-
-})}
-
-</div>
-
-) : (
-
-<div id="loading-container">
-
-<img src="/assets/icon.png" alt="logo" id="loader" />
-
-</div>
-
-)}
-
-</div>
-
-);
-
-}
-
-}
-
-```
-
-# Summary
+![](img/00046.jpeg) `Link` 上的 `to` 属性使用了 ES6 字符串插值。如果你用反引号包裹你的字符串（`` ` ``）而不是引号，您还可以使用`${VARIABLE}`将变量直接嵌入其中。
 
 就是这样！我们已经建立了完整的 React 应用程序。你的朋友对最终产品感到非常高兴，但我们还远未完成。
 
