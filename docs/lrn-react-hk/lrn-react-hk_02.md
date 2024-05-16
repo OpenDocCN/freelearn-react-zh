@@ -38,7 +38,7 @@ React 基于三个基本原则：
 
 +   **声明式**：我们告诉 React 我们想要它做什么，而不是告诉它如何做事情。因此，我们可以轻松设计我们的应用程序，当数据发生变化时，React 将高效地更新和渲染正确的组件。例如，下面的代码是命令式的，它是声明式的相反：
 
-```jsx
+```
 const input = ['a', 'b', 'c']
 let result = []
 for (let i = 0; i < input.length; i++) {
@@ -49,7 +49,7 @@ console.log(result) // prints: [ 'aa', 'bb', 'cc' ]
 
 正如我们所看到的，命令式代码中，我们需要一步一步地告诉计算机要做什么。然而，使用声明式代码，我们只需告诉计算机我们想要什么，如下所示：
 
-```jsx
+```
 const input = ['a', 'b', 'c']
 let result = input.map(str => str + str)
 console.log(result) // prints: [ 'aa', 'bb', 'cc' ]
@@ -101,13 +101,13 @@ React 始终努力使开发者体验尽可能顺畅，同时确保保持足够�
 
 1.  首先，我们通过扩展`React.Component`类来定义我们的类组件：
 
-```jsx
+```
 class Example extends React.Component {
 ```
 
 1.  然后，我们定义`componentDidMount`生命周期方法，在这里我们从 API 中获取数据：
 
-```jsx
+```
         componentDidMount () {
             fetch(`http://my.api/${this.props.name}`)
                 .then(...)
@@ -116,7 +116,7 @@ class Example extends React.Component {
 
 1.  然而，我们还需要定义`componentDidUpdate`生命周期方法，以防`name`属性发生变化。此外，我们需要在这里添加一个手动检查，以确保只有在`name`属性发生变化时才重新获取数据，而不是在其他属性发生变化时：
 
-```jsx
+```
     componentDidUpdate (prevProps) {
         if (this.props.name !== prevProps.name) {
             fetch(`http://my.api/${this.props.name}`)
@@ -128,7 +128,7 @@ class Example extends React.Component {
 
 1.  为了使我们的代码更少重复，我们可以定义一个名为`fetchData`的单独方法，以便获取我们的数据，如下所示：
 
-```jsx
+```
         fetchData () {
             fetch(`http://my.api/${this.props.name}`)
                 .then(...)
@@ -137,7 +137,7 @@ class Example extends React.Component {
 
 1.  然后，我们可以在`componentDidMount`和`componentDidUpdate`中调用该方法：
 
-```jsx
+```
         componentDidMount () {
             this.fetchData()
         }
@@ -147,7 +147,7 @@ class Example extends React.Component {
                 this.fetchData()
 ```
 
-```jsx
+```
             }
         }
 ```
@@ -160,13 +160,13 @@ class Example extends React.Component {
 
 1.  我们首先通过导入`authenticateUser`函数来包装我们的组件与上下文，以及`AuthenticationContext`组件来访问上下文：
 
-```jsx
+```
 import authenticateUser, { AuthenticationContext } from './auth'
 ```
 
 1.  然后，我们定义了我们的`App`组件，在这里我们使用了`AuthenticationContext.Consumer`组件和`user`渲染属性：
 
-```jsx
+```
 const App = () => (
     <AuthenticationContext.Consumer>
         {user =>
@@ -174,7 +174,7 @@ const App = () => (
 
 1.  现在，我们根据用户是否已登录来显示不同的文本：
 
-```jsx
+```
                 user ? `${user} logged in` : 'not logged in'
 ```
 
@@ -182,7 +182,7 @@ const App = () => (
 
 +   +   一个三元运算符，它是`if`条件的内联版本。它看起来如下：`ifThisIsTrue ? returnThis : otherwiseReturnThis`。
 
-+   一个模板字符串，它可以用来将变量插入到字符串中。它用反引号（```jsx) instead of normal single quotes (`'`). Variables can be inserted via the `${variableName}` syntax. We can also use any JavaScript expressions within the `${}` brackets, for example, `${someValue + 1}`.
++   一个模板字符串，它可以用来将变量插入到字符串中。它用反引号（`` ` ``) 而不是普通的单引号（`'`）。 变量可以通过`${ variableName}`语法插入。我们还可以在`${}`括号内使用任何JavaScript表达式，例如`${someValue + 1}`。
 
 4.  Finally, we export our component after wrapping it with the `authenticateUser` context:
 
@@ -196,7 +196,7 @@ const App = () => (
 
 export default authenticateUser(App)
 
-```jsx
+```
 
 In the previous example, we used the higher-order `authenticateUser` component to add authentication logic to our existing component. We then used `AuthenticationContext.Consumer` to inject the `user` object into our component through its render props.
 
@@ -230,7 +230,7 @@ As you can imagine, using many contexts will result in a large tree with many su
 
 </AuthenticationContext.Consumer>
 
-```jsx
+```
 
 This is not very easy to read or write, and it is also prone to errors if we need to change something later on. Furthermore, the wrapper hell makes debugging hard, because we need to look at a large component tree, with many components just acting as wrappers.
 
@@ -258,7 +258,7 @@ fetch(`http://my.api/${this.props.name}`)
 
 }
 
-```jsx
+```
 
 The Effect Hook that was implemented here will automatically trigger when the component mounts, and whenever the `name` prop changes.
 
@@ -272,7 +272,7 @@ const language = useContext(LanguageContext)
 
 const status = useContext(StatusContext)
 
-```jsx
+```
 
 Now that we know which problems Hooks can solve, let's get started using Hooks in practice!
 
@@ -307,7 +307,7 @@ In order to set up a new project, we run the following command, which creates a 
 
 > npx create-react-app <app-name>
 
-```jsx
+```
 
 If you prefer using the `yarn` package manager, you can run `yarn create react-app <app-name>` instead.
 
@@ -317,7 +317,7 @@ We are now going to create a new project using `create-react-app`. Run the follo
 
 > npx create-react-app chapter1_1
 
-```jsx
+```
 
 Now that we have initialized our project, let's move on to starting the project.
 
@@ -329,7 +329,7 @@ In order to start a project in development mode, we have to run the `npm start` 
 
 > npm start
 
-```jsx
+```
 
 Now, we can access our project by opening `http://localhost:3000` in our browser:
 
@@ -349,7 +349,7 @@ To build a project for production deployments, we simply run the `build` script:
 
 > npm run-script build
 
-```jsx
+```
 
 Using `yarn`, we can simply run `yarn build`. Actually, we can run any package script that does not conflict with the name of an internal `yarn` command in this way: `yarn <script-name>`, instead of `npm run-script <script-name>`.
 
@@ -359,7 +359,7 @@ Using `yarn`, we can simply run `yarn build`. Actually, we can run any package s
 
 > npm install -g serve
 
-```jsx
+```
 
 3.  Then, we can run the `serve` command, as follows:
 
@@ -367,7 +367,7 @@ Using `yarn`, we can simply run `yarn build`. Actually, we can run any package s
 
 > serve -s build
 
-```jsx
+```
 
 The `-s` flag of the `serve` command rewrites all not-found requests to `index.html`, allowing for client-side routing.
 
@@ -387,7 +387,7 @@ As mentioned before, we are going to use `create-react-app` to initialize our pr
 
 > npx create-react-app chapter1_1
 
-```jsx
+```
 
 Next we are going to define our app as a class component.
 
@@ -402,7 +402,7 @@ We first write our app as a traditional class component, as follows:
 
 import React from 'react'
 
-```jsx
+```
 
 3.  We then start defining our own class component—`MyName`:
 
@@ -410,7 +410,7 @@ import React from 'react'
 
 class MyName extends React.Component {
 
-```jsx
+```
 
 4.  Next, we have to define a `constructor` method, where we set the initial `state` object, which will be an empty string. Here, we also need to make sure to call `super(props)`, in order to let the `React.Component` constructor know about the `props` object:
 
@@ -424,7 +424,7 @@ this.state = { name: '' }
 
 }
 
-```jsx
+```
 
 5.  Now, we define a method to set the `name` variable, by using `this.setState`. As we will be using this method to handle input from a text field, we need to use `evt.target.value` to get the value from the input field:
 
@@ -436,7 +436,7 @@ this.setState({ name: evt.target.value })
 
 }
 
-```jsx
+```
 
 6.  Then, we define the `render` method, where we are going to display an input field and the name:
 
@@ -444,7 +444,7 @@ this.setState({ name: evt.target.value })
 
 render () {
 
-```jsx
+```
 
 7.  To get the `name` variable from the `this.state` object, we are going to use destructuring:
 
@@ -452,7 +452,7 @@ render () {
 
 const { name } = this.state
 
-```jsx
+```
 
 The previous statement is the equivalent of doing the following:
 
@@ -460,7 +460,7 @@ The previous statement is the equivalent of doing the following:
 
 const name = this.state.name
 
-```jsx
+```
 
 8.  Then, we display the currently entered `name` state variable:
 
@@ -472,7 +472,7 @@ return (
 
 <h1>我的名字是：{name}</h1>
 
-```jsx
+```
 
 9.  We display an `input` field, passing the handler method to it:
 
@@ -488,7 +488,7 @@ return (
 
 }
 
-```jsx
+```
 
 10.  Finally, we export our class component:
 
@@ -496,7 +496,7 @@ return (
 
 export default MyName
 
-```jsx
+```
 
 If we were to run this code now, we would get the following error when entering text, because passing the handler method to `onChange` changes the `this` context:
 
@@ -516,7 +516,7 @@ this.handleChange = this.handleChange.bind(this)
 
 }
 
-```jsx
+```
 
 There is the possibility of using arrow functions as class methods, to avoid having to re-bind the `this` context. However, to use this feature we need to install the Babel compiler plugin, `@babel/plugin-proposal-class-properties`, as it is not a released JavaScript feature yet.
 
@@ -544,7 +544,7 @@ Again, we use `create-react-app` to set up our project:
 
 > npx create-react-app chapter1_2
 
-```jsx
+```
 
 Let's get started with defining a function component using Hooks now.
 
@@ -559,7 +559,7 @@ Now, we define the same component as a function component:
 
 import React, { useState } from 'react'
 
-```jsx
+```
 
 3.  We start with the function definition. In our case, we do not pass any arguments, because our component does not have any props:
 
@@ -567,7 +567,7 @@ import React, { useState } from 'react'
 
 function MyName () {
 
-```jsx
+```
 
 The next step would be to get the `name` variable from the component state. However, we cannot use `this.state` in function components. We have already learned that Hooks are just JavaScript functions, but what does that really mean? It means that we can simply use Hooks from function components, just like any other JavaScript function!
 
@@ -582,7 +582,7 @@ To use state via Hooks, we call `useState()` with our initial state as the argu
 
 const [ name, setName ] = useState('')
 
-```jsx
+```
 
 The previous code is equivalent to the following:
 
@@ -594,7 +594,7 @@ const name = nameHook[0]
 
 const setName = nameHook[1]
 
-```jsx
+```
 
 5.  Now, we define the input handler function, where we make use of the `setName` setter function:
 
@@ -606,7 +606,7 @@ setName(evt.target.value)
 
 }
 
-```jsx
+```
 
 As we are not dealing with classes now, there is no need to rebind `this` anymore!
 
@@ -630,7 +630,7 @@ return (
 
 export default MyName
 
-```jsx
+```
 
 And that's it—we have successfully used Hooks for the first time! As you can see, the `useState` Hook is a drop-in replacement for `this.state` and `this.setState`.
 
@@ -700,7 +700,7 @@ return (
 
 export default MyName
 
-```jsx
+```
 
 As we can see, the class component needs a lot of boilerplate code to initialize the `state` object and handler functions.
 
@@ -740,7 +740,7 @@ return (
 
 export default MyName
 
-```jsx
+```
 
 As we can see, Hooks make our code much more concise and easier to reason about. We do not need to worry about how things work internally anymore; we can simply use state, by accessing the `useState` function!
 
@@ -809,7 +809,7 @@ import { useState } from 'react'
 
 const [ state, setState ] = useState(initialState)
 
-```jsx
+```
 
 The `useState` Hook replaces `this.state` and `this.setState()`.
 
@@ -825,7 +825,7 @@ import { useEffect } from 'react'
 
 useEffect(didUpdate)
 
-```jsx
+```
 
 The `useEffect` Hook replaces the `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` methods.
 
@@ -841,7 +841,7 @@ import { useContext } from 'react'
 
 const value = useContext(MyContext)
 
-```jsx
+```
 
 The `useContext` Hook replaces context consumers.
 
@@ -868,7 +868,7 @@ import { useRef } from 'react'
 
 const refContainer = useRef(initialValue)
 
-```jsx
+```
 
 The `useRef` Hook is used to deal with references to elements and components in React. We can set a reference by passing the `ref` prop to an element or a component, as follows: `<ComponentName ref={refContainer} />`
 
@@ -882,7 +882,7 @@ import { useReducer } from 'react'
 
 const [ state, dispatch ] = useReducer(reducer, initialArg, init)
 
-```jsx
+```
 
 The `useReducer` Hook is used to deal with complex state logic.
 
@@ -896,7 +896,7 @@ import { useMemo } from 'react'
 
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b])
 
-```jsx
+```
 
 The `useMemo` Hook is useful for optimization when we want to avoid re-executing expensive operations.
 
@@ -920,7 +920,7 @@ doSomething(a, b)
 
 )
 
-```jsx
+```
 
 The `useCallback` Hook is useful when passing callbacks to optimized child components. It works similarly to the `useMemo` Hook, but for callback functions.
 
@@ -934,7 +934,7 @@ import { useLayoutEffect } from 'react'
 
 useLayoutEffect(didUpdate)
 
-```jsx
+```
 
 The `useLayoutEffect` Hook can be used to read information from the DOM.
 
@@ -952,7 +952,7 @@ import { useDebugValue } from 'react'
 
 useDebugValue(value)
 
-```jsx
+```
 
 Make sure to use this Hook in custom Hooks to display the current state of your Hooks, as it will make it easier to debug them.
 
@@ -985,7 +985,7 @@ return <input value={value} onChange={onChange} />
 
 }
 
-```jsx
+```
 
 As we can see, Hooks greatly simplify dealing with input fields in React.
 
@@ -1005,7 +1005,7 @@ url: `/user/${id}`,
 
 })
 
-```jsx
+```
 
 As we can see, using a special Hook for dealing with fetching data is quite simple.
 
@@ -1021,7 +1021,7 @@ const { views, url, data, status } = useCurrentRoute()
 
 const { navigate } = useNavigation()
 
-```jsx
+```
 
 As we can see, Hooks make routing much easier to deal with.
 
@@ -1041,7 +1041,7 @@ useOnMount(() => { ... })
 
 在卸载时使用 useOnUnmount(() => { ... })
 
-```jsx
+```
 
 As we can see, Hooks can directly replace life cycle methods in class components.
 

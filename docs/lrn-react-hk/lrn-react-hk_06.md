@@ -759,34 +759,25 @@ import React, { useReducer, useEffect } from 'react'
     useEffect(() => {
 ```
 
-1.  如果用户已登录，我们将`document.title`设置为`<username> - React Hooks Blog`。我们使用模板字符串，允许我们通过`${ }`语法在字符串中包含变量或 JavaScript 表达式。模板字符串使用```jsx:
-
-```定义
-
-if (user) {
-
-document.title = `${user} - React Hooks Blog`
+1.  如果用户已登录，我们将`document.title`设置为`<username> - React Hooks Blog`。我们使用模板字符串，允许我们通过`${ }`语法在字符串中包含变量或 JavaScript 表达式。模板字符串使用`` ` ``定义：
 
 ```jsx
-
-4.  Otherwise, if the user is not logged in, we simply set the `document.title` to `React Hooks Blog`:
-
+        if (user) {
+            document.title = `${user} - React Hooks Blog`
 ```
 
-} else {
-
-document.title = 'React Hooks Blog'
-
-}
+4.  否则，如果用户没有登录，我们只需将`document.title`设置为`React Hooks Blog`即可：
 
 ```jsx
-
-5.  Finally, we pass the `user` value as the second argument to the Effect Hook, in order to ensure that whenever the `user` value updates, our effect function triggers again:
-
+        } else {
+        document.title = 'React Hooks Blog'
+        }
 ```
 
-}, [user])
+5.  最后，我们将`user`值作为第二个参数传递给效果挂钩，以确保每当`user`值更新时，我们的效果函数都会再次触发:
 
+```jsx
+    }, [user])
 ```
 
 如果我们现在启动我们的应用程序，我们可以看到`document.title`被设置为`React Hooks Blog`，因为 Effect Hook 在`App`组件挂载时触发，而`user`值尚未定义：
