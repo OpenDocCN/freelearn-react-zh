@@ -11,4 +11,3 @@
 +   [第十章：与 GraphQL API 交互](lrn-react-ts3_10.md)
 +   [第十一章：使用 Jest 进行单元测试](lrn-react-ts3_11.md)
 +   [第十二章：答案](lrn-react-ts3_12.md)
-+   [第十三章：您可能会喜欢的其他书籍](lrn-react-ts3_13.md)

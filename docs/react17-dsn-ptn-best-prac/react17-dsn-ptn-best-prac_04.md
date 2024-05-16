@@ -1,6 +1,4 @@
-# 第五章
-
-React 工作原理
+# 第二部分：React 工作原理
 
 本节将解释如何使用新的 React Hooks，它们的规则，以及如何创建自己的 Hooks。还将涵盖如何将当前的 React 类组件应用迁移到新的 React Hooks。
 

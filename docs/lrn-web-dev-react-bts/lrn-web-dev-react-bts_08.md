@@ -1,4 +1,4 @@
-# 第八章。ReactJS API
+# 第八章：ReactJS API
 
 在之前的章节中，我们学习了 React 路由器，它允许我们创建单页应用程序，并确保我们的 UI 与 URL 同步。我们还介绍了 React 路由器的优势、动态路由匹配以及如何配置路由器中的组件以与匹配的 URL 在 DOM 中呈现。通过 React 路由器浏览器历史功能，用户可以向后/向前导航并恢复应用程序的先前状态。现在我们将检查如何将 React API 与 Facebook、Twitter 和 Git 等其他 API 集成。
 

@@ -1,4 +1,4 @@
-# 第三章。ReactJS-JSX
+# 第三章：ReactJS-JSX
 
 在上一章中，我们通过使用 React-Bootstrap 和 React 来构建响应式主题的过程。我们看到了它的示例以及 Twitter Bootstrap 和 React-Bootstrap 之间的区别。
 

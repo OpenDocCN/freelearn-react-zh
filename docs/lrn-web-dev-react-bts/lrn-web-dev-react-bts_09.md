@@ -1,4 +1,4 @@
-# 第九章。React 与 Node.js
+# 第九章：React 与 Node.js
 
 在之前的章节中，我们已经学习了关于 React 路由、Facebook API 的集成，以及如何配置和处理应用程序的 URL。我们还学习了如何根据 URL 在 DOM 中注册我们的组件。
 

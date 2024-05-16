@@ -1,4 +1,4 @@
-# 第一章。开始使用 React 和 Bootstrap
+# 第一章：开始使用 React 和 Bootstrap
 
 使用 JavaScript 和 CSS 构建现代 Web 应用程序有许多不同的方法，包括许多不同的工具选择和许多新的理论需要学习。本书向您介绍了 ReactJS 和 Bootstrap，您在学习现代 Web 应用程序开发时可能会遇到它们。它们都用于构建快速和可扩展的用户界面。React 以（视图）而闻名于 MVC。当我们谈论定义*M*和*C*时，我们需要寻找其他地方，或者我们可以使用其他框架如 Redux 和 Flux 来处理远程数据。
 

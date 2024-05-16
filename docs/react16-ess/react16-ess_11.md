@@ -1,4 +1,4 @@
-# 第十一章。为 Flux 轻松维护准备您的 React 应用程序
+# 第十一章：为 Flux 轻松维护准备您的 React 应用程序
 
 我们决定在 React 应用程序中实现 Flux 架构的原因是我们希望拥有更容易维护的数据流。在上一章中，我们实现了`AppDispatcher`、`TweetActionCreators`和`TweetStore`。让我们快速回想一下它们的用途：
 

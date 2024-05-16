@@ -1,4 +1,4 @@
-# 第二章。使用 React-Bootstrap 和 React 构建响应式主题
+# 第二章：使用 React-Bootstrap 和 React 构建响应式主题
 
 现在，您已经使用 ReactJS 和 Bootstrap 完成了您的第一个 Web 应用程序，我们将使用这两个框架构建您的应用程序的第一个响应式主题。我们还将涉及到两个框架的全部潜力。所以，让我们开始吧！
 

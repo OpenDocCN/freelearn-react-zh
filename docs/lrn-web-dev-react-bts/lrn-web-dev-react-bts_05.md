@@ -1,4 +1,4 @@
-# 第五章。React 中的 jQuery Bootstrap 组件
+# 第五章：React 中的 jQuery Bootstrap 组件
 
 到目前为止，我们已经介绍了如何创建 DOM 元素以及 DOM 如何与 React 组件交互。正如我们所见，每个框架都有不同的方式与 DOM 元素交互，而 React 使用快速的内部合成 DOM 来执行差异并为您计算最有效的 DOM 变化，这是您的组件实际存在的地方。
 
