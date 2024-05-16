@@ -1,3 +1,4 @@
++   [React 和 ReactNative 第二版](README.md)
 +   [前言](react-rn-2e_00.md)
 +   [第一章：为什么要使用 React？](react-rn-2e_01.md)
 +   [第二章：使用 JSX 渲染](react-rn-2e_02.md)
